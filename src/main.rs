@@ -12,8 +12,6 @@ use regex::Regex;
 ///
 /// This backend is defined in my service but you can change it to whatever backend you want,
 /// but it should have an m3u8 somewhere in it.
-// const BACKEND: &str = "fa.primary.router.video.fox";
-// JMR - change this back!!
 const BACKEND: &str = "ShastaRain_backend";
 
 
@@ -29,15 +27,15 @@ fn main(mut req: Request) -> Result<Response, Error> {
     // Make sure we are running the version we think we are.
     println!("cpe-video-fastly-manifest-rewrite:{}", get_version());
     let dictionarySecrets = Dictionary::open("secrets");
-    let xFoxCdn = dictionarySecrets.get("X-FOX-CDN-TEST").unwrap_or("".to_string());
+    let xDemoCdn = dictionarySecrets.get("X-DEMO-CDN-TEST").unwrap_or("".to_string());
     // Filter request methods...
-    if xFoxCdn == "" {
+    if xDemoCdn == "" {
       return Ok(Response::from_status(StatusCode::INTERNAL_SERVER_ERROR).with_body_str("Service Configuration Invalid"));
     }
-    if req.get_header_str("X-FOX-CDN").unwrap_or("") != xFoxCdn {
+    if req.get_header_str("X-DEMO-CDN").unwrap_or("") != xDemoCdn {
       return Ok(Response::from_status(StatusCode::FORBIDDEN).with_body_str("Denied"));
     }
-    let longToken = req.get_header_str("X-FOX-LONG-TOKEN").unwrap_or("").to_owned();
+    let longToken = req.get_header_str("X-DEMO-LONG-TOKEN").unwrap_or("").to_owned();
     if longToken == "" {
       return Ok(Response::from_status(StatusCode::BAD_REQUEST).with_body_str("Missing Token"));
     }
@@ -52,8 +50,8 @@ fn main(mut req: Request) -> Result<Response, Error> {
     }
 
     // Acquire the manifest from origin, then decorate it with the value of longToken
-    let xFoxCdnOrigin = dictionarySecrets.get("X-FOX-CDN").unwrap_or("".to_string());
-    req.set_header("X-FOX-CDN", xFoxCdnOrigin);
+    let xDemoCdnOrigin = dictionarySecrets.get("X-DEMO-CDN").unwrap_or("".to_string());
+    req.set_header("X-DEMO-CDN", xDemoCdnOrigin);
     let mut resp = req.send(BACKEND)?;
 
     if resp.get_status() != StatusCode::OK {
