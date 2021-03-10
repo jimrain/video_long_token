@@ -1,0 +1,16 @@
+[package]
+name = "compute-starter-kit-rust-default"
+version = "0.1.0"
+authors = []
+edition = "2018"
+
+[profile.release]
+debug = true
+
+[dependencies]
+fastly = "^0.6.0"
+config = "0.10.1"
+m3u8-rs = "1.0.7"
+regex = "1"
+lazy_static = "1.4.0"
+

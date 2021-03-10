@@ -1,0 +1,6 @@
+version = 8
+name = "fox_s"
+description = "fox test"
+authors = ["Jim Rainville"]
+language = "rust"
+service_id = "6T70vhxGkKvynSpAQmlQ0u"
